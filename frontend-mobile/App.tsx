@@ -1,20 +1,31 @@
-import React, { useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
-import tw from 'twrnc'
-import { pingBackend } from './lib/api'
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+import { View, Text } from "react-native";
+import tw from "twrnc";
+import "./lib/firebase";
+import LoginScreen from "./screens/LoginScreen";
+import MainApp from "./screens/MainApp";
 
 export default function App() {
-  const [message, setMessage] = useState('Loading...')
-
-  console.log('ENV:', process.env.EXPO_PUBLIC_API_URL)
+  const [authStatus, setAuthStatus] = useState<
+    "checking" | "loggedIn" | "loggedOut"
+  >("checking");
 
   useEffect(() => {
-    pingBackend().then((res) => setMessage(res.message))
-  }, [])
+    const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
+      setAuthStatus(user ? "loggedIn" : "loggedOut");
+    });
 
-  return (
-    <View style={tw`flex-1 items-center justify-center bg-blue-500`}>
-      <Text style={tw`text-white text-2xl font-bold`}>Mobile: {message}</Text>
-    </View>
-  )
+    return () => unsubscribe();
+  }, []);
+
+  if (authStatus === "checking") {
+    return (
+      <View style={tw`flex-1 items-center justify-center bg-blue-500`}>
+        <Text style={tw`text-white text-xl`}>Checking session...</Text>
+      </View>
+    );
+  }
+
+  return authStatus === "loggedIn" ? <MainApp /> : <LoginScreen />;
 }
