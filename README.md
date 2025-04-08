@@ -7,7 +7,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 - ✅ **Daily & Weekly Quizzes** based on real-world news
 - ✅ **Cross-Platform**: React Native (Expo) + Next.js
@@ -114,8 +114,7 @@ CaughtUp is still in active development — if you're interested in collaboratin
 
 **Kevin Wong**  
 💼 Software Engineer  
-🌐 [kevinwong.dev](https://kevinwong.dev)  
-🐦 [@kevinwong](https://twitter.com/kevinwong)
+🌐 [Portfolio](https://kevinlwong.github.io/Portfolio/)  
 
 ---
 
@@ -123,10 +122,3 @@ CaughtUp is still in active development — if you're interested in collaboratin
 
 ---
 
-### 💡 Tips
-
-- Swap out screenshot paths and contact info as needed
-- Add shields (npm, Firebase, deployment) later
-- Pin this repo on your GitHub profile!
-
-Let me know if you want a shorter version for mobile, or a version that includes deployment instructions (e.g. Vercel + Supabase).
