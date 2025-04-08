@@ -1,26 +1,33 @@
-import { getAuth } from 'firebase/auth'
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL 
+// frontend-mobile/lib/api.ts
+import { getIdToken, getAuth } from "firebase/auth"
 
 export async function authFetch(path: string, options: RequestInit = {}) {
-  const user = getAuth().currentUser
-  const token = user ? await user.getIdToken() : null
+  const auth = getAuth()
+  const user = auth.currentUser
 
-  const headers = {
-    ...(options.headers || {}),
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    'Content-Type': 'application/json',
-  }
+  if (!user) throw new Error("Not authenticated")
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const token = await getIdToken(user)
+
+  const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}${path}`, {
     ...options,
-    headers,
+    headers: {
+      ...(options.headers || {}),
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
   })
 
-  if (!res.ok) throw new Error(`API error: ${res.status}`)
+  if (!res.ok) {
+    const error = await res.json()
+    throw new Error(error.message || "Request failed")
+  }
+
   return res.json()
 }
 
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL 
 export async function pingBackend() {
   try {
     const res = await fetch(`${API_URL}/api/ping`)
