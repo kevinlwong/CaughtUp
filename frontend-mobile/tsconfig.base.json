@@ -1,9 +1,9 @@
 {
-  "extends": "./tsconfig.base.json",
- "compilerOptions": {
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "jsx": "react-native",
+    "extends": "./tsconfig.base.json",
+   "compilerOptions": {
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "jsx": "react-native",
+    }
   }
-}

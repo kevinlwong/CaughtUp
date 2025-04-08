@@ -1,7 +1,6 @@
 {
   "name": "caughtup",
   "version": "1.0.0",
-  "main": "index.js",
   "author": "Kevin Wong <kevinwong973@gmail.com>",
   "license": "MIT",
   "private": true,
@@ -10,5 +9,8 @@
     "frontend-mobile",
     "backend",
     "shared-utils"
-  ]
+  ],
+  "dependencies": {
+    "twrnc": "^4.6.1"
+  }
 }

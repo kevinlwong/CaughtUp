@@ -31,7 +31,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={tw`flex-1 items-center justify-center bg-blue-500 p-4`}>
+    <View style={tw`flex-1 items-center justify-center bg-blue-300 p-4`}>
       <Text style={tw`text-white text-xl font-bold mb-4`}>CaughtUp Login</Text>
 
       <TextInput
