@@ -12,3 +12,11 @@ export type QuizQuestion = {
     correctQuestions: string[]
   }
   
+  export type UserProfile = {
+    name?: string
+    generation?: string
+    interests?: string[]
+    isPremium?: boolean
+    finishedOnboarding?: boolean
+  }
+  

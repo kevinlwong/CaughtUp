@@ -29,7 +29,17 @@ export default function QuizScreen({ onComplete }: Props) {
 
   const current = questions[currentIndex]
 
+  if (!current) {
+    return (
+      <View style={tw`flex-1 justify-center items-center bg-blue-300`}>
+        <Text style={tw`text-red-500`}>Failed to load quiz question.</Text>
+        <Button title="Back to Home" onPress={() => onComplete({ score: 0, total: 0, correctQuestions: [] })} />
+      </View>
+    )
+  }
+
   const handleSelect = (option: string) => {
+    console.log("Selected:", option)
     const currentQuestion = questions[currentIndex]
     const updatedAnswers = {
       ...answers,
@@ -52,7 +62,8 @@ export default function QuizScreen({ onComplete }: Props) {
         total: questions.length,
         correctQuestions: correct.map((q) => q.id),
       }
-  
+      console.log("Quiz finished, sending result:", result)
+
       onComplete(result)
     }
   }
@@ -66,19 +77,28 @@ export default function QuizScreen({ onComplete }: Props) {
     )
   }
 
+  if (!questions.length) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text>No quiz available today 💤</Text>
+        <Button title="Back to Home" onPress={() => onComplete({ score: 0, total: 0, correctQuestions: [] })} />
+      </View>
+    )
+  }
+
   return (
-    <View style={tw`flex-1 p-4 justify-center`}>
-      <Text style={tw`text-lg font-bold mb-2`}>{current.question}</Text>
+    <View style={tw`flex-1 p-4 justify-center bg-blue-300`}>
+      <Text style={tw`text-xl font-bold mb-4`}>{current.question}</Text>
       {current.options.map((option) => (
         <TouchableOpacity
           key={option}
-          style={tw`bg-blue-500 p-3 rounded mb-2`}
+          style={tw`bg-blue-500 p-3 rounded-xl mb-4`}
           onPress={() => handleSelect(option)}
         >
           <Text style={tw`text-white`}>{option}</Text>
         </TouchableOpacity>
       ))}
-      <Text style={tw`text-xs text-gray-500 mt-4`}>
+      <Text style={tw`text-xs text-gray-700 mt-4`}>
         Question {currentIndex + 1} of {questions.length}
       </Text>
     </View>

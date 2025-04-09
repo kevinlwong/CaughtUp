@@ -1,11 +1,17 @@
-import { pingBackend } from '@/lib/api'
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../components/AuthProvider";
 
-export default async function Home() {
-  const data = await pingBackend()
+export default function IndexPage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-900 text-white">
-      <h1 className="text-2xl font-bold">Web: {data.message}</h1>
-    </main>
-  )
+  useEffect(() => {
+    if (!loading) {
+      router.push(user ? "/home" : "/login");
+    }
+  }, [user, loading, router]);
+
+  return <p className="text-center mt-20">Redirecting...</p>;
 }

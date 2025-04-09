@@ -2,16 +2,22 @@
 import React from 'react'
 import { View, Text, Button } from 'react-native'
 import tw from 'twrnc'
+import { UserProfile } from '../types/quiz'
+import ScreenWrapper from '../components/ScreenWrapper'
 
 type Props = {
-  onStart: () => void
-}
-
-export default function HomeScreen({ onStart }: Props) {
-  return (
-    <View style={tw`flex-1 justify-center items-center`}>
-      <Text style={tw`text-xl mb-4`}>Welcome to CaughtUp 🎯</Text>
-      <Button title="Start Daily Quiz" onPress={onStart} />
-    </View>
-  )
-}
+    onStart: () => void
+    profile: { name?: string }
+  }
+  
+  export default function HomeScreen({ onStart, profile }: Props) {
+    return (
+        <ScreenWrapper bg="blue-300">
+        <Text style={tw`text-2xl font-bold mb-2`}>
+          Hey {profile.name || "there"}, Welcome to CaughtUp 🎯
+        </Text>
+        <Button title="Start Daily Quiz" onPress={onStart} />
+      </ScreenWrapper>
+    )
+  }
+  
