@@ -12,14 +12,14 @@ app.use(express.json())
 app.use('/api/quiz', quizRoutes)
 app.use("/api/profile", profileRoutes)
 
-app.get('/api/ping', (req, res) => {
-  res.json({ message: 'CaughtUp backend is alive 🚀' })
-})
+// app.get('/api/ping', (req, res) => {
+//   res.json({ message: 'CaughtUp backend is alive 🚀' })
+// })
 
-app.get('/api/profile', verifyFirebaseToken, (req, res) => {
-  const user = (req as any).user
-  res.json({ user })
-})
+// app.get('/api/profile', verifyFirebaseToken, (req, res) => {
+//   const user = (req as any).user
+//   res.json({ user })
+// })
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

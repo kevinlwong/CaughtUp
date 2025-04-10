@@ -20,6 +20,14 @@ export async function authFetch(path: string, options: RequestInit = {}) {
   return res.json()
 }
 
+export async function saveProfile(profile: any) {
+  return authFetch("/api/profile", {
+    method: "POST",
+    body: JSON.stringify(profile),
+  });
+}
+
+
 export async function pingBackend() {
   const res = await fetch(`${API_URL}/api/ping`)
   const data = await res.json()

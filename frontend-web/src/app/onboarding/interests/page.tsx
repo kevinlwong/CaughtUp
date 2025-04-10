@@ -65,7 +65,31 @@ export default function InterestsPage() {
     });
   };
 
+  const handleExpandAll = () => {
+    setExpanded(Object.keys(groupedTopics));
+  };
+
+  const handleCollapseAll = () => {
+    setExpanded([]);
+  };
+
+  const handleSelectAll = () => {
+    const allSelected: Record<string, string[]> = {};
+    for (const [category, topics] of Object.entries(groupedTopics)) {
+      allSelected[category] = [...topics];
+    }
+    setSelected(allSelected);
+  };
+
+  const handleDeselectAll = () => {
+    setSelected({});
+  };
+
   const hasSelection = Object.values(selected).some((arr) => arr.length > 0);
+  const allExpanded = expanded.length === Object.keys(groupedTopics).length;
+  const allSelected = Object.entries(groupedTopics).every(
+    ([cat, topics]) => selected[cat]?.length === topics.length
+  );
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6">
@@ -73,17 +97,32 @@ export default function InterestsPage() {
         What are you interested in?
       </h1>
 
+      <div className="flex flex-wrap gap-4 justify-center mb-4">
+        <button
+          onClick={allExpanded ? handleCollapseAll : handleExpandAll}
+          className="bg-gray-200 text-sm px-4 py-1 rounded hover:bg-gray-400 transition"
+        >
+          {allExpanded ? "Collapse All" : "Expand All"}
+        </button>
+        <button
+          onClick={allSelected ? handleDeselectAll : handleSelectAll}
+          className="bg-gray-200 text-sm px-4 py-1 rounded hover:bg-gray-400 transition"
+        >
+          {allSelected ? "Deselect All" : "Select All"}
+        </button>
+      </div>
+
       <div className="w-full max-w-3xl space-y-4">
         {Object.entries(groupedTopics).map(([category, topics]) => {
           const isExpanded = expanded.includes(category);
           return (
             <div
               key={category}
-              className={`border rounded-lg p-4 bg-white shadow transition-all duration-300`}
+              className="border rounded-lg p-4 bg-white shadow hover:bg-gray-100 hover:shadow-md hover:scale-[1.01] transition-all duration-200"
             >
               <button
                 onClick={() => toggleCategory(category)}
-                className="w-full text-left text-lg font-semibold text-blue-700 mb-2"
+                className="w-full text-left text-lg font-semibold text-blue-500 mb-2"
               >
                 {category}
               </button>

@@ -21,6 +21,10 @@ export default function HomePage() {
 
   if (loading || !user) return <p className="text-center mt-20">Loading...</p>;
 
+  // ✨ Grab name and onboarding status from profile
+  const name = user.profile?.name || "there";
+  const isFirstTime = !user.profile?.finishedOnboarding;
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="absolute top-4 right-4">
@@ -45,7 +49,11 @@ export default function HomePage() {
         )}
       </div>
 
-      <h1 className="text-3xl font-bold mb-4">Welcome back 👋</h1>
+      {/* 👋 Personalized greeting */}
+      <h1 className="text-3xl font-bold mb-4">
+        Hello {name}, {isFirstTime ? "welcome to CaughtUp!" : "welcome back 👋"}
+      </h1>
+
       <button
         className="bg-blue-500 text-white px-4 py-2 rounded"
         onClick={() => router.push(ROUTES.quiz)}

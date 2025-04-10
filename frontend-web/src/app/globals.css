@@ -16,6 +16,25 @@
   }
 }
 
+@keyframes shimmer-x {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.shimmer-x {
+  background-image: linear-gradient(90deg, #3b82f6 30%, #9333ea 50%, #3b82f6 70%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer-x 5s linear infinite;
+}
+
 html,
 body {
   max-width: 100vw;
