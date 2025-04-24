@@ -1,8 +1,11 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
 import { motion } from "framer-motion";
-import { authFetch } from '@/lib/api'
+import { getAuth } from "firebase/auth";
+import { updateUserProfile } from "@/lib/firestore";
+import { useAuth } from "@/components/AuthProvider"; 
 
 const plans = [
   {
@@ -32,17 +35,33 @@ const plans = [
   },
 ];
 
-
 export default function PremiumPage() {
   const router = useRouter();
+  const { refreshUser } = useAuth();
+  const handleChoice = async (type: "free" | "premium") => {
+    const isPremium = type === "premium";
+    const user = getAuth().currentUser;
 
-  const handleChoice = (type: "free" | "premium") => {
-    // Save choice later to backend if needed
-    router.push(ROUTES.home);
+    if (!user) {
+      console.error("User not found");
+      return;
+    }
+
+    try {
+      await updateUserProfile(user.uid, {
+        isPremium,
+        finishedOnboarding: true,
+      });
+      await refreshUser();
+      router.push(ROUTES.home);
+    } catch (err) {
+      console.error("Failed to update premium choice:", err);
+      // Optional: show UI feedback
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-blue-300">
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-neutral-100">
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -65,14 +84,13 @@ export default function PremiumPage() {
         {plans.map((plan) => (
           <div
             key={plan.title}
-            className="bg-white rounded-lg p-6 shadow-sm transition-transform transform hover:bg-gray-50 hover:scale-[1.05] hover:shadow-lg"
+            className="bg-white rounded-xl p-6 border border-neutral-300 shadow-sm hover:shadow-md hover:scale-[1.03] transition-transform"
           >
-            <h2 className="text-2xl font-bold mb-1 shimmer-x">{plan.title}</h2>
+            <h2 className="text-2xl font-semibold mb-1 shimmer-x">{plan.title}</h2>
+            <p className="text-lg mb-2 text-neutral-700">{plan.price}</p>
+            <p className="text-sm text-neutral-500 mb-4">{plan.description}</p>
 
-            <p className="text-lg mb-2">{plan.price}</p>
-            <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
-
-            <ul className="mb-6 text-sm space-y-1 text-gray-700">
+            <ul className="mb-6 text-sm space-y-1 text-neutral-700">
               {plan.features.map((f) => (
                 <li key={f}>• {f}</li>
               ))}
@@ -80,10 +98,10 @@ export default function PremiumPage() {
 
             <button
               onClick={() => handleChoice(plan.onClick as any)}
-              className={`w-full py-2 rounded font-semibold transition ${
+              className={`w-full py-2 rounded-md font-semibold transition ${
                 plan.title === "Free"
-                  ? "bg-gray-200 hover:bg-gray-300 text-gray-600"
-                  : "bg-blue-500 hover:bg-blue-600 text-white"
+                  ? "bg-neutral-200 hover:bg-neutral-300 text-neutral-700"
+                  : "bg-black hover:bg-neutral-900 text-white"
               }`}
             >
               {plan.button}

@@ -1,6 +1,10 @@
 "use client";
 
-import { onAuthStateChanged, getAuth } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  getAuth,
+  User as FirebaseUser,
+} from "firebase/auth";
 import {
   ReactNode,
   useEffect,
@@ -9,7 +13,13 @@ import {
   useContext,
 } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "../lib/firebase";
+import { auth, db } from "../lib/firebase"; // db = getFirestore(app)
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 
 type UserProfile = {
   name?: string;
@@ -26,11 +36,15 @@ type AuthContextType = {
     profile: UserProfile;
   } | null;
   loading: boolean;
+  refreshUser: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
+  refreshUser: function (): Promise<void> {
+    throw new Error("Function not implemented.");
+  }
 });
 
 export function useAuth() {
@@ -42,42 +56,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  const refreshUser = async () => {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) return;
+
+    try {
+      const userRef = doc(db, "users", firebaseUser.uid);
+      const snap = await getDoc(userRef);
+
+      const profile = snap.exists() ? (snap.data() as UserProfile) : {};
+
+      setUser({
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        profile,
+      });
+    } catch (err) {
+      console.error("Failed to refresh user", err);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        try {
-          const token = await firebaseUser.getIdToken(); // ✅ Get token
-  
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/profile`, {
-            headers: {
-              Authorization: `Bearer ${token}`, // ✅ Proper auth header
-            },
-          });
-  
-          const profile = await res.json();
-  
-          setUser({
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            profile,
-          });
-        } catch (err) {
-          console.error("❌ Failed to fetch profile:", err);
-        }
+        await refreshUser();
       } else {
         setUser(null);
         router.push("/login");
       }
-  
       setLoading(false);
     });
-  
+
     return () => unsubscribe();
   }, [router]);
-  
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

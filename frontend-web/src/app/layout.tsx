@@ -11,7 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-blue-300 text-gray-900">
+      <body className="bg-neutral-100">
         <AuthProvider>
           <main className="min-h-screen flex flex-col items-center justify-center px-6">
             {children}

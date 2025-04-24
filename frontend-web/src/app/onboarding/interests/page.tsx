@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
+import { updateUserProfile } from "@/lib/firestore";
+import { getAuth } from "firebase/auth";
 
 const groupedTopics: Record<string, string[]> = {
   "Science & Technology": [
@@ -73,6 +75,17 @@ export default function InterestsPage() {
     setExpanded([]);
   };
 
+  const handleNext = async () => {
+    const user = getAuth().currentUser;
+    const interests = Object.values(selected).flat(); // Flatten grouped selections
+    if (user) {
+      await updateUserProfile(user.uid, { interests });
+    } else {
+      console.error("User is not authenticated.");
+    }
+    router.push(ROUTES.onboarding.premium);
+  };
+
   const handleSelectAll = () => {
     const allSelected: Record<string, string[]> = {};
     for (const [category, topics] of Object.entries(groupedTopics)) {
@@ -92,56 +105,52 @@ export default function InterestsPage() {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6">
-      <h1 className="text-2xl font-bold mb-6 text-center">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-100 px-4 py-10">
+      <h1 className="text-3xl font-semibold text-neutral-800 mb-6 text-center">
         What are you interested in?
       </h1>
 
-      <div className="flex flex-wrap gap-4 justify-center mb-4">
+      <div className="flex flex-wrap gap-3 justify-center mb-6">
         <button
           onClick={allExpanded ? handleCollapseAll : handleExpandAll}
-          className="bg-gray-200 text-sm px-4 py-1 rounded hover:bg-gray-400 transition"
+          className="text-sm px-4 py-2 rounded border border-neutral-300 bg-white hover:bg-neutral-50"
         >
           {allExpanded ? "Collapse All" : "Expand All"}
         </button>
         <button
           onClick={allSelected ? handleDeselectAll : handleSelectAll}
-          className="bg-gray-200 text-sm px-4 py-1 rounded hover:bg-gray-400 transition"
+          className="text-sm px-4 py-2 rounded border border-neutral-300 bg-white hover:bg-neutral-50"
         >
           {allSelected ? "Deselect All" : "Select All"}
         </button>
       </div>
 
-      <div className="w-full max-w-3xl space-y-4">
+      <div className="w-full max-w-3xl space-y-5">
         {Object.entries(groupedTopics).map(([category, topics]) => {
           const isExpanded = expanded.includes(category);
           return (
             <div
               key={category}
-              className="border rounded-lg p-4 bg-white shadow hover:bg-gray-100 hover:shadow-md hover:scale-[1.01] transition-all duration-200"
+              className="border border-neutral-300 rounded-lg p-4 bg-white transition hover:shadow-sm"
             >
               <button
                 onClick={() => toggleCategory(category)}
-                className="w-full text-left text-lg font-semibold text-blue-500 mb-2"
+                className="w-full text-left text-lg font-medium text-neutral-700 mb-3"
               >
                 {category}
               </button>
 
-              <div
-                className={`grid grid-cols-2 sm:grid-cols-3 gap-3 overflow-hidden transition-all duration-300 ${
-                  isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                }`}
-              >
-                {topics.map((topic) => {
+              <div className={`grid grid-cols-2 sm:grid-cols-3 gap-2 overflow-hidden transition-all duration-300 ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+                {topics.map(topic => {
                   const isSelected = selected[category]?.includes(topic);
                   return (
                     <button
                       key={topic}
                       onClick={() => toggleTopic(category, topic)}
-                      className={`px-3 py-2 rounded text-sm border transition-all ${
+                      className={`px-3 py-2 text-sm rounded border transition ${
                         isSelected
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-100 text-black hover:bg-gray-200"
+                          ? "bg-neutral-900 text-white border-neutral-900"
+                          : "bg-neutral-100 text-neutral-800 border-neutral-300 hover:bg-neutral-200"
                       }`}
                     >
                       {topic}
@@ -155,12 +164,13 @@ export default function InterestsPage() {
       </div>
 
       <button
-        onClick={() => {
-          console.log("User interests:", selected);
-          router.push(ROUTES.onboarding.premium);
-        }}
+        onClick={handleNext}
         disabled={!hasSelection}
-        className="mt-8 bg-blue-500 text-white px-6 py-2 rounded disabled:opacity-50"
+        className={`mt-10 px-6 py-2 rounded-md text-sm font-semibold transition ${
+          hasSelection
+            ? "bg-black text-white hover:bg-neutral-900"
+            : "bg-neutral-300 text-white cursor-not-allowed"
+        }`}
       >
         Next
       </button>
