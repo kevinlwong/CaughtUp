@@ -59,7 +59,7 @@ cd backend
 yarn dev
 ```
 
-> Will run at `http://localhost:3001`
+> Will run at `http://localhost:3001` or https://caughtupbackend.onrender.com
 
 ### 3. Start the Web Frontend
 
