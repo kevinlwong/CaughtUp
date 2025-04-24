@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -38,26 +37,44 @@ export default function LandingPage() {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const handleStart = () => {
-    router.push("/load"); // Redirects to the loading screen with auth check
+    router.push("/load"); // Route that checks auth and sends to /login or /home
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12 bg-neutral-100 text-neutral-800">
       <motion.img
-        src="/caughtup_logo_light.svg"
+        src="/caughtup-icon-light.svg"
         alt="CaughtUp Logo"
-        className="w-24 h-24 mb-6"
+        className="w-40 h-40 mb-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       />
 
-      <h1 className="text-3xl font-bold mb-4">Welcome to CaughtUp</h1>
-      <p className="text-center max-w-lg text-neutral-600 mb-10">
-        A modern way to stay informed — through engaging, personalized current events quizzes.
-      </p>
+      <motion.h1
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.6 }}
+        className="text-3xl font-bold mb-4"
+      >
+        Welcome to CaughtUp
+      </motion.h1>
 
-      <div className="w-full max-w-xl space-y-4">
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        className="text-center max-w-lg text-neutral-600 mb-10"
+      >
+        A modern way to stay informed — through engaging, personalized current events quizzes.
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-xl space-y-4"
+      >
         {features.map((feature, index) => (
           <div key={index} className="bg-white rounded shadow p-4">
             <button
@@ -84,14 +101,17 @@ export default function LandingPage() {
             </AnimatePresence>
           </div>
         ))}
-      </div>
+      </motion.div>
 
-      <button
+      <motion.button
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
         onClick={handleStart}
         className="mt-10 px-6 py-3 bg-neutral-900 text-white rounded-md hover:bg-neutral-800 transition"
       >
         Want to Get Caught Up?
-      </button>
+      </motion.button>
     </div>
   );
 }

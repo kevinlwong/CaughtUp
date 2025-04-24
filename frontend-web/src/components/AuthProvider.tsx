@@ -78,18 +78,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      const currentPath = window.location.pathname;
+  
       if (firebaseUser) {
         await refreshUser();
       } else {
         setUser(null);
-        router.push("/login");
+  
+        // Only redirect if on protected route
+        const protectedRoutes = ["/home", "/quiz", "/results"];
+        const isProtected = protectedRoutes.some((route) =>
+          currentPath.startsWith(route)
+        );
+  
+        if (isProtected) {
+          router.push("/login");
+        }
       }
+  
       setLoading(false);
     });
-
+  
     return () => unsubscribe();
   }, [router]);
-
   return (
     <AuthContext.Provider value={{ user, loading, refreshUser }}>
       {children}

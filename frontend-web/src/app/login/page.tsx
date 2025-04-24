@@ -88,7 +88,7 @@ export default function LoginPage() {
           className="bg-white w-full max-w-md p-8 rounded-lg shadow-md"
         >
           <h1 className="text-2xl font-semibold text-center mb-6 text-neutral-800">
-            {isSignUp ? "Create Your Account" : "Welcome Back"}
+            {isSignUp ? "Let's Get You Caught Up" : "Welcome Back"}
           </h1>
 
           <div className="space-y-4">
